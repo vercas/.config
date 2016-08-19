@@ -1,13 +1,23 @@
+#	No idea what this is.
 htop/
 
-
+#	Fish! :D
 fish/config.*.copy
 fish/fishd.*
 fish/fish_history
 
+#	Fish installed shenanigans.
 fish/functions/fish_prompt.fish
 
-
+#	The fuck?
 thefuck/__pycache__/
 
+#	Byobu
+.byobu/.byobu
+.byobu/prompt
+.byobu/.ssh-agent
+.byobu/status
+.byobu/statusrc
+.byobu/windows
+.byobu/windows.tmux
 
