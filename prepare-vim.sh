@@ -10,7 +10,7 @@ mkdir -p ~/.vim/{bundle,backup,undo,swap}
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
 # Back up old .vimrc if it exists.
-mv -n ~/.vimrc ~/.vimrc.old 2> /dev/null || true
+backUp ~/.vimrc
 
 # Remove existing .vimrc, if any. Like, if the backup failed. Soz.
 rm -f ~/.vimrc

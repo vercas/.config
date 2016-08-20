@@ -17,7 +17,7 @@ function backUp {
         new=$new.old
     done
 
-    cp -Rn $src $new
-    # Do a recursive copy if it's a directory, and also don't overwrite anything, in case something else created the file/folder after the loop above but before the copy command.
+    mv -n $src $new 2> /dev/null || :
+    # Move the file/directory, and also don't overwrite anything, in case something else created the file/directory after the loop above but before the copy command.
 }
 
