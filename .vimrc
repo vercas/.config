@@ -3,12 +3,6 @@
 
 set shell=bash
 
-"""""""""""""""""""""""""""""""""""""""""
-"   Syntax highlighting and color scheme.
-
-syntax enable
-colorscheme holokai
-
 """"""""""""""""""
 "   Mouse support.
 
@@ -121,4 +115,10 @@ call vundle#end()
 filetype plugin indent on
 
 "   Here comes non-Vundle stuffs.
+
+"""""""""""""""""""""""""""""""""""""""""
+"   Syntax highlighting and color scheme.
+
+syntax enable
+silent! colorscheme holokai
 
