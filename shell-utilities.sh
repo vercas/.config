@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 #   Note: This is exactly POSIX-compliant, but should be portable enough.
 

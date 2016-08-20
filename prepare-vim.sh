@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # Utilitary variables
 VIMDIR=$HOME/.vim
