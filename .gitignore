@@ -1,11 +1,18 @@
 #	Miscellaneous, or simply no idea what these are.
-htop/
-pulse/
 dconf/
+deluge/
 fontconfig/
+gedit/
 gtk-2.0/
+gtk-3.0/
+htop/
+keepassx/
 nautilus/
+pulse/
+quassel-irc.org/
 sublime-text-3/
+
+Trolltech.conf
 
 qvm-mru-filecopy
 user-dirs.dirs
