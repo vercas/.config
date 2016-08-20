@@ -1,7 +1,14 @@
 function fish_greeting
     if type -qf fortune
         if type -qf cowsay
-            fortune -as | cowsay
+            set -l twid (math (tput cols) - 3)
+
+            if test $status -ne 0
+                # Failed to get columns, meh...
+                fortune -as | cowsay -s
+            else
+                fortune -as | cowsay -W $twid -s
+            end
         else
             fortune -as
         end
