@@ -1,5 +1,15 @@
-#	No idea what this is.
+#	Miscellaneous, or simply no idea what these are.
 htop/
+pulse/
+dconf/
+fontconfig/
+gtk-2.0/
+nautilus/
+sublime-text-3/
+
+qvm-mru-filecopy
+user-dirs.dirs
+user-dirs.locale
 
 #	Fish! :D
 fish/config.*.copy
@@ -20,4 +30,6 @@ thefuck/__pycache__/
 .byobu/statusrc
 .byobu/windows
 .byobu/windows.tmux
+
+# TODO: Handle Sublime properly.
 
