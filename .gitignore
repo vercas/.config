@@ -24,6 +24,7 @@ thefuck/__pycache__/
 
 #	Byobu
 .byobu/.byobu
+.byobu/datetime.tmux
 .byobu/prompt
 .byobu/.ssh-agent
 .byobu/status
