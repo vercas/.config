@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 
 # Utilitary variables
 VIMDIR=$HOME/.vim
@@ -16,7 +16,7 @@ mkdir -p $VIMDIR/swap
 git clone https://github.com/VundleVim/Vundle.vim.git $VIMDIR/bundle/Vundle.vim
 
 # Back up old .vimrc if it exists.
-backUp ~/.vimrc
+backUp ~/.vimrc || return 30
 
 # Remove existing .vimrc, if any. Like, if the backup failed. Soz.
 rm -f ~/.vimrc
