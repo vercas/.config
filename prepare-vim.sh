@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# First, some goodies.
+source shell-utilities.sh
+
 # Create necessary directories.
 mkdir -p ~/.vim/{bundle,backup,undo,swap} 
 
