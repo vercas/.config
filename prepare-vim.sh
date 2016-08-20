@@ -7,16 +7,20 @@ VIMDIR=$HOME/.vim
 source shell-utilities.sh
 
 # Create necessary directories.
-mkdir -p $VIMDIR/bundle
-mkdir -p $VIMDIR/backup
-mkdir -p $VIMDIR/undo
-mkdir -p $VIMDIR/swap
+mkdir -p $VIMDIR/{bundle,backup,undo,swap}
 
 # Clone Vundle.
 git clone https://github.com/VundleVim/Vundle.vim.git $VIMDIR/bundle/Vundle.vim
 
 # Back up old .vimrc if it exists.
-[ -e ~/.vimrc ] && backUp ~/.vimrc || exit 30
+if [ -e ~/.vimrc ]; then
+    backUp ~/.vimrc
+
+    local st=$?
+
+    [ st -ne 0 ] && exit st
+    # It's useful to report errors.
+fi
 
 # Remove existing .vimrc, if any. Like, if the backup failed. Soz.
 rm -f ~/.vimrc
