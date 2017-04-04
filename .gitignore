@@ -8,12 +8,17 @@ gtk-3.0/
 htop/
 keepassx/
 nautilus/
+orage/
 pulse/
 quassel-irc.org/
 sublime-text-3/
+Thunar/
+xfce4/
 
 Trolltech.conf
 
+mimeapps.list
+pavucontrol.ini
 qvm-mru-filecopy
 user-dirs.dirs
 user-dirs.locale
