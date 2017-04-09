@@ -94,6 +94,9 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'                       " Bootstrap Vundle.
 
+Plugin 'LucHermitte/lh-vim-lib'                     " Apparently, utilities.
+Plugin 'LucHermitte/local_vimrc'                    " For local configurations.
+
 Plugin 'mhinz/vim-startify'                         " Just a gimmick.
 
 Plugin 'changyuheng/color-scheme-holokai-for-vim'   " Pretty theme.
@@ -106,7 +109,7 @@ Plugin 'ervandew/supertab'                          " Use of Tab to navigate com
 Plugin 'tpope/vim-fugitive'                         " Git support (handy for Airline).
 Plugin 'airblade/vim-gitgutter'                     " Shows changes in a gutter.
 
-Plugin 'mbbill/undotree'                            " For those etimes when I fuck up colossally.
+Plugin 'mbbill/undotree'                            " For those times when I fuck up colossally.
 
 Plugin 'vim-airline/vim-airline'                    " Godlike addition!
 Plugin 'bling/vim-bufferline'                       " Meh.
