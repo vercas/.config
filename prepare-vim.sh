@@ -26,7 +26,7 @@ fi
 rm -f ~/.vimrc
 
 # Finally, symlink .vimrc
-ln -s $HOME/.config/.vimrc ~/.vimrc
+ln -s $HOME/.config/.vimrc ~/.vim/vimrc
 
 # And the cherry on top of the cake, installing the plugins.
 vim +PluginInstall +qall
