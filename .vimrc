@@ -1,7 +1,18 @@
-""""""""""""""""
-"   Very basics.
+"""""""""""""""""""""
+"   Fixing the shell.
 
-set shell=bash
+if &shell =~# 'fish$'
+    " Love you, fish, but your non-compliance with POSIX sometimes causes
+    " issues. :(
+
+    set shell=bash
+endif
+
+""""""""""
+"   UTF-8.
+
+set encoding=utf-8
+set termencoding=utf-8
 
 """"""""""""""""""
 "   Mouse support.
@@ -15,6 +26,7 @@ endif
 
 set backup
 set writebackup
+set undofile
 
 set backupdir=~/.vim/backup//
 set directory=~/.vim/swap//
@@ -31,10 +43,17 @@ set wildmenu
 
 set number
 
+""""""""""""""
+"   Splitting.
+
+set splitbelow
+set splitright
+
 """"""""""""""""""""""""""""""""""""""""""""
 "   Case-insensitive and hilighted searches.
 
 set ignorecase
+set incsearch
 set hlsearch
 
 """"""""""""""""
@@ -49,7 +68,7 @@ autocmd FileType make set ts=4
 " Makefiles should still get hard tabs, but displayed as 4 spaces.
 
 set list
-set listchars=tab:·\ ,eol:⏎,trail:·,extends:»,precedes:« " Unprintable chars mapping
+set listchars=tab:▸\ ,eol:⏎,trail:·,extends:»,precedes:« " Unprintable chars mapping
 
 """""""""""""""""
 "   Code folding.
@@ -111,8 +130,16 @@ Plugin 'airblade/vim-gitgutter'                     " Shows changes in a gutter.
 
 Plugin 'mbbill/undotree'                            " For those times when I fuck up colossally.
 
+"Plugin 'bling/vim-bufferline'                       " Meh
 Plugin 'vim-airline/vim-airline'                    " Godlike addition!
-Plugin 'bling/vim-bufferline'                       " Meh.
+Plugin 'vim-airline/vim-airline-themes'             " More goodiness.
+
+"Plugin 'edkolev/tmuxline.vim'                       " Test.
+
+Plugin 'vim-syntastic/syntastic'                    " Mainly to piss me off.
+Plugin 'itchyny/vim-cursorword'                     " Lazy searching.
+
+Plugin 'Raimondi/delimitMate'                       " More laziness.
 
 call vundle#end()
 filetype plugin indent on
@@ -124,4 +151,21 @@ filetype plugin indent on
 
 syntax enable
 silent! colorscheme holokai
+
+""""""""""""""""""""
+"   Syntax checking.
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+""""""""""""
+"   Airline.
+
+let g:airline#extensions#tabline#enabled = 1
 
