@@ -1,6 +1,8 @@
 local vline = {
     time = os.time(),
+    utf8 = not not (os.getenv("LANG") or ""):upper():gsub("[%s%-]", ""):find("UTF8"),
     right = true,
+    id = false,
 }
 
 local segs = {}
@@ -13,33 +15,64 @@ _G.vline = setmetatable({}, {
     __metatable = "Nawpe.",
 })
 
+function vline:set_id(num)
+    if type(num) ~= "number" or num < 0 or num % 1 ~= 0 then
+        error("ID must be a positive integer.")
+    end
+
+    if vline.id then
+        error("ID was already set to " .. vline.id)
+    end
+
+    vline.id = num
+end
+
 function vline:add(...)
-    local dat = {...}
-    segs[#segs + 1] = dat
+    local dat, res = {...}, {}
 
-    for i = 1, #dat do
-        local d = dat[i]
-        local dType = type(d)
+    local function expandArr(dat, res)
+        for i = 1, #dat do
+            local d = dat[i]
+            local dType = type(d)
 
-        if dType == "table" then
-            if d[_special_bgc] then
-                if not dat.FirstColor then
-                    dat.FirstColor = d[_special_bgc]
+            if dType == "table" then
+                if d[_special_bgc] then
+                    if not res.FirstColor then
+                        res.FirstColor = d[_special_bgc]
+                    end
+
+                    res.LastColor = d[_special_bgc]
+
+                    res[#res + 1] = d
+                elseif d[_special_fgc] or d[_special_attr] then
+                    res[#res + 1] = d
+                else
+                    expandArr(d, res)
+                end
+            elseif dType == "string" or dType == "number" or dType == "boolean" then
+                if not res.FirstColor then
+                    error("Segment must specify a background color before any text/numbers.")
                 end
 
-                dat.LastColor = d[_special_bgc]
-            elseif not d[_special_fgc] and not d[_special_attr] then
-                error("Unexpected table at index " .. i .. ".")
-            end
-        elseif dType == "string" or dType == "number" or dType == "boolean" then
-            if not dat.FirstColor then
-                error("Segment must specify a background color before any text/numbers.")
+                res[#res + 1] = d
+            elseif dType == "function" then
+                expandArr({ d() }, res)
             end
         end
     end
 
-    if not dat.FirstColor then
-        error("Segment needs at least one background color.")
+    expandArr(dat, res)
+
+    if #res > 1 then
+        if not res.FirstColor then
+            error("Segment needs at least one background color.")
+        end
+
+        segs[#segs + 1] = res
+
+        return true
+    else
+        return false
     end
 end
 
@@ -53,8 +86,8 @@ function vline:expand()
 
     local res, lastCol = { }, "default"
 
-    for i = (vline.right and #segs or 1), (vline.right and 1 or #segs), (vline.right and -1 or 1) do
-        if vline.right then
+    for i = (self.right and #segs or 1), (self.right and 1 or #segs), (self.right and -1 or 1) do
+        if self.right then
             res[#res + 1] = FGC(segs[i].FirstColor)
             res[#res + 1] = ""
             res[#res + 1] = FGC "default"
@@ -74,7 +107,7 @@ function vline:expand()
             elseif eType == "table" then
                 res[#res + 1] = e
 
-                if not vline.right and e[_special_bgc] then
+                if not self.right and e[_special_bgc] then
                     lastCol = e[_special_bgc]
                 end
             else
@@ -83,7 +116,7 @@ function vline:expand()
         end
     end
 
-    if not vline.right then
+    if not self.right then
         res[#res + 1] = FGC(segs[#segs].LastColor)
         res[#res + 1] = BGC "default"
         res[#res + 1] = ""
@@ -95,7 +128,7 @@ end
 function vline:print_tmux(left)
     vline.right = not left
 
-    local res = vline:expand()
+    local res = self:expand()
 
     local attribsChanged, attr, bgc, fgc = false
 
@@ -139,7 +172,7 @@ function vline:print_tmux(left)
         attr = nil
     end
 
-    if vline.right then io.write " " end
+    if self.right then io.write " " end
 
     for i = 1, #res do
         local e = res[i]
@@ -170,7 +203,7 @@ function vline:print_tmux(left)
         end
     end
 
-    if not vline.right then io.write " " end
+    if not self.right then io.write " " end
 
     return 0
 end
@@ -201,6 +234,38 @@ DEF   = { [_special_attr]  = true }
 
 ARW_R = ""
 ARW_L = ""
+
+function UNIC(a, b)
+    if type(a) ~= "string" then
+        error("Unicode alternative must be a string.")
+    end
+
+    if b ~= nil then
+        if type(b) ~= "string" then
+            error("Non-unicode alternative must be a string.")
+        end
+
+        if vline.utf8 then
+            return a
+        else
+            return b
+        end
+    else
+        --  Means both alternatives are in the main string.
+
+        local sep = a:find("|", 1, true)
+
+        if not sep then
+            error("Unicode alternative must contain a '|' to separate the unicode-enabled string on the left from the non-unicode string on the right. Alternatively, call the function with two arguments.")
+        end
+
+        if vline.utf8 then
+            return a:sub(1, sep - 1)
+        else
+            return a:sub(sep + 1)
+        end
+    end
+end
 
 ---------------------------------------------------------------------
 --  Numeric Utilities
@@ -285,7 +350,7 @@ end
 --  Data Caching
 
 function vline.cache(name, timeout, producer, consumer)
-    local fName = "/tmp/vline.cache." .. name
+    local fName = "/tmp/vline.cache." .. name .. "." .. (vline.id or "anon")
 
     local fDesc, fErr = io.open(fName, "r")
 
@@ -336,6 +401,53 @@ function vline.cache(name, timeout, producer, consumer)
     else
         return rest, true
     end
+end
+
+---------------------------------------------------------------------
+--  Logging
+
+function vline.log(...)
+    local dat, res = {...}, { os.date "[%Y-%m-%d %H:%M:%S] " }
+
+    local function expandArr(dat, res)
+        for i = 1, #dat do
+            local e = dat[i]
+            local eType = type(e)
+
+            if eType == "function" then
+                e = e()
+                eType = type(e)
+            end
+
+            if eType == "table" then
+                expandArr(e, res)
+            elseif eType == "number" or eType == "boolean" then
+                res[#res + 1] = tostring(e)
+            elseif eType == "string" then
+                res[#res + 1] = e
+            else
+                error("Only numbers, booleans, strings and arrays allowed. Functions that return one of those are also allowed.")
+            end
+        end
+    end
+
+    expandArr(dat, res)
+
+    if res[#res]:sub(-1) ~= "\n" then
+        res[#res + 1] = "\n"
+    end
+
+    local fDesc, fErr = io.open("/tmp/vline.log." .. (vline.id or "anon"), "a")
+
+    if not fDesc then
+        error("Failed to open log file: " .. fErr, 2)
+    end
+
+    for i = 1, #res do
+        fDesc, fErr = fDesc:write(res[i])
+    end
+
+    fDesc:close()
 end
 
 return _G.vline

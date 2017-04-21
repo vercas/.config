@@ -1,17 +1,36 @@
 #!/usr/bin/env lua
 WID = tonumber(arg[1])
+CID = tonumber(arg[2])
 
 require "vline"
 
-if WID >= 130 then
-    vline:add(BGC "000000", FGC "EEEE22", string.format(os.date(" 📅 %Y-%m-%d %a %%s %H:%M:%S", vline.time), vline.get_clock()))
-elseif WID >= 100 then
-    vline:add(BGC "000000", FGC "EEEE22", os.date(" %Y-%m-%d📅 %H:%M:%S", vline.time))
-elseif WID >= 70 then
-    vline:add(BGC "000000", FGC "EEEE22", os.date("%y-%m-%d %H:%M:%S", vline.time))
-else
-    vline:add(BGC "000000", FGC "EEEE22", string.format(os.date("%m-%d %%s %M", vline.time), vline.get_clock()))
+if CID then
+    vline:set_id(CID)
 end
+
+vline:add(BGC "000000", FGC "EEEE22", function()
+    if WID >= 130 then
+        if vline.utf8 then
+            return string.format(os.date(" 📅 %Y-%m-%d %a %%s %H:%M:%S", vline.time), vline.get_clock())
+        else
+            return os.date(" %Y-%m-%d %a %H:%M:%S", vline.time)
+        end
+    elseif WID >= 100 then
+        if vline.utf8 then
+            return os.date(" %Y-%m-%d📅 %H:%M:%S", vline.time)
+        else
+            return os.date(" %Y-%m-%d %H:%M:%S", vline.time)
+        end
+    elseif WID >= 70 then
+        return os.date("%y-%m-%d %H:%M:%S", vline.time)
+    else
+        if vline.utf8 then
+            return string.format(os.date("%m-%d %%s %M", vline.time), vline.get_clock())
+        else
+            return os.date("%m-%d %M:%S", vline.time)
+        end
+    end
+end)
 
 do
     local fDesc, fErr = io.open("/proc/uptime", "r")
@@ -21,30 +40,30 @@ do
         fDesc:close()
 
         if uptime then
-            vline:add(BGC "CCCCCC", FGC "000000", (function()
+            vline:add(BGC "CCCCCC", FGC "000000", function()
                 if uptime < 60 then     --  Under a minute.
-                    if WID >= 210 then
+                    if WID >= 210 and vline.utf8 then
                         return " 💡 ", math.floor(uptime), "s"
                     elseif WID >= 100 then
-                        return math.floor(uptime), "s 💡"
+                        return math.floor(uptime), UNIC "s 💡|s U "
                     else
                         return math.floor(uptime), "s"
                     end
                 elseif uptime < 3600 then   --  Under an hour.
-                    if WID >= 210 then
+                    if WID >= 210 and vline.utf8 then
                         return " 💡 ", math.floor(uptime / 60), "m"
                     elseif WID >= 100 then
-                        return math.floor(uptime / 60), "m 💡"
+                        return math.floor(uptime / 60), UNIC "m 💡|m U "
                     else
                         return math.floor(uptime / 60), "m"
                     end
                 elseif uptime < 86400 then  --  Under a day.
-                    if WID >= 210 then
+                    if WID >= 210 and vline.utf8 then
                         return " 💡 ", math.floor(uptime / 3600), "h ", FGC "666666", string.format("%dm ", (uptime / 60) % 60)
                     elseif WID >= 100 then
-                        return " ", math.floor(uptime / 3600), "h ", FGC "666666", string.format("%dm 💡 ", (uptime / 60) % 60)
+                        return " ", math.floor(uptime / 3600), "h ", FGC "666666", string.format("%dm ", (uptime / 60) % 60), UNIC "💡 |U "
                     elseif WID >= 70 then
-                        return math.floor(uptime / 3600), "h", FGC "666666", string.format("%dm💡", (uptime / 60) % 60)
+                        return math.floor(uptime / 3600), "h", FGC "666666", string.format("%dm", (uptime / 60) % 60), UNIC "💡|U"
                     else
                         return math.floor(uptime / 3600), "h"
                     end
@@ -52,14 +71,14 @@ do
                     if WID >= 210 then
                         return " 💡 ", math.floor(uptime / 86400), "d ", FGC "666666", string.format("%dh ", (uptime / 3600) % 24)
                     elseif WID >= 100 then
-                        return " ", math.floor(uptime / 86400), "d ", FGC "666666", string.format("%dh 💡 ", (uptime / 3600) % 24)
+                        return " ", math.floor(uptime / 86400), "d ", FGC "666666", string.format("%dh ", (uptime / 3600) % 24), UNIC "💡 |U "
                     elseif WID >= 70 then
-                        return math.floor(uptime / 86400), "d", FGC "666666", string.format("%dh💡", (uptime / 3600) % 24)
+                        return math.floor(uptime / 86400), "d", FGC "666666", string.format("%dh", (uptime / 3600) % 24), UNIC "💡|U"
                     else
                         return math.floor(uptime / 86400), "d"
                     end
                 end
-            end)())
+            end)
         end
     end
 end
@@ -88,23 +107,23 @@ end, function(dat, new)
     local avl, total = dat:match "^(%d+)/(%d+)$"
     avl, total = tonumber(avl), tonumber(total)
 
-    vline:add(BGC "22AA00", FGC "EEEEEE", (function()
-        if WID >= 210 then
+    vline:add(BGC "22AA00", FGC "EEEEEE", function()
+        if WID >= 210 and vline.utf8 then
             return string.format("📕 %d%%/%s ", 100 * avl / total, BytesToHuman(total, 2, 9))
         elseif WID >= 150 then
-            return string.format("%d%%/%s 📕 ", 100 * avl / total, BytesToHuman(total, 2, 9))
+            return string.format(" %d%%/%s ", 100 * avl / total, BytesToHuman(total, 2, 9)), UNIC "📕 |M"
         elseif WID >= 120 then
-            return string.format("%d%%/%s 📕 ", 100 * avl / total, BytesToHuman(total, 2))
+            return string.format(" %d%%/%s ", 100 * avl / total, BytesToHuman(total, 2)), UNIC "📕 |M"
         elseif WID >= 100 then
-            return string.format("%d%%/%s📕  ", 100 * avl / total, BytesToHuman(total, 0))
+            return string.format(" %d%%/%s ", 100 * avl / total, BytesToHuman(total, 0)), UNIC "📕 |M"
         elseif WID >= 80 then
-            return string.format("%d%%%s📕", 100 * avl / total, BytesToHuman(total, 0))
-        elseif WID >= 50 then
-            return string.format("%d%%📕", 100 * avl / total)
+            return string.format("%d%%%s", 100 * avl / total, BytesToHuman(total, 0)), UNIC "📕|M"
+        elseif WID >= 50 or not vline.utf8 then
+            return string.format("%d%%", 100 * avl / total), UNIC "📕|M"
         else
             return string.format("%s📕", vline.get_bar(avl / total))
         end
-    end)())
+    end)
 end)
 
 do
@@ -116,44 +135,77 @@ do
 
         if one then
             vline:add(BGC "444488", FGC "EEEEEE", (function()
-                if WID >= 210 then
-                    return string.format(" 🖩 %.2f ", one)
-                elseif WID >= 100 then
-                    return string.format(" %.2f🖩 ", one)
-                elseif WID >= 80 then
-                    return string.format("%.2f🖩", one)
-                elseif WID >= 70 then
-                    return string.format("%.1f🖩", one)
-                elseif one >= 10 then
-                    return string.format("%d🖩", math.floor(one))
+                if vline.utf8 then
+                    if WID >= 210 then
+                        return string.format(" 🖩 %.2f ", one)
+                    elseif WID >= 100 then
+                        return string.format(" %.2f🖩 ", one)
+                    elseif WID >= 80 then
+                        return string.format("%.2f🖩", one)
+                    elseif WID >= 70 then
+                        return string.format("%.1f🖩", one)
+                    elseif one >= 10 then
+                        return string.format("%d🖩", math.floor(one))
+                    else
+                        return string.format("%d%s🖩", math.floor(one), vline.get_bar(one % 1))
+                    end
                 else
-                    return string.format("%d%s🖩", math.floor(one), vline.get_bar(one % 1))
+                    if WID >= 100 then
+                        return string.format(" %.2fL ", one)
+                    elseif WID >= 80 then
+                        return string.format("%.2fL", one)
+                    elseif one < 10 then
+                        return string.format("%.1fL", one)
+                    else
+                        return string.format("%dL", math.floor(one))
+                    end
                 end
             end)())
         end
     end
 end
 
-do
-    local fDesc, fErr = io.open("/var/run/reboot-required", "r")
-
-    if fDesc then
-        fDesc:close()
-
-        if WID >= 100 then
-            vline:add(BGC "FF0000", FGC "FFFFFF", " ⥁ ")
-        else
-            vline:add(BGC "FF0000", FGC "FFFFFF", "⥁")
-        end
-    end
-end
-
-vline.cache("apt-updates", 120, function()
-    local fDesc = io.popen("/usr/lib/update-notifier/apt-check")
+vline.cache("virsh", 60, function()
+    local fDesc = io.popen([[echo -n "$(virsh list --name | grep -E '.+' | wc -l)" "$(virsh list --name --all | grep -E '.+' | wc -l )"]])
 
     local dat = fDesc:read "*a"
 
-    if (fDesc:close()) == 0 then
+    local res, reason, status = fDesc:close()
+
+    if res and status == 0 then
+        return dat
+    else
+        return "0\t0"
+    end
+end, function(dat, new)
+    local act, tot = dat:match "^(%d+)%s+(%d+)$"
+    act, tot = tonumber(act), tonumber(tot)
+
+    if not act or not tot or tot == 0 then
+        return  --  No data, invalid data, or simply no VMs.
+    end
+
+    local bgc, fgc = BGC "AAAAEE", FGC "000000"
+
+    if WID >= 210 then
+        vline:add(bgc, fgc, UNIC " 🖧 | ", act, "/", tot, " VMs ")
+    elseif WID >= 120 then
+        vline:add(bgc, fgc, " ", act, "/", tot, UNIC " 🖧 | VMs ")
+    elseif WID >= 100 then
+        vline:add(bgc, fgc, " ", act, "/", tot, UNIC " 🖧 |V ")
+    else
+        vline:add(bgc, fgc, act, "/", tot, UNIC "🖧|V")
+    end
+end)
+
+vline.cache("apt-updates", 120, function()
+    local fDesc = io.popen("/usr/lib/update-notifier/apt-check 2>&1")
+
+    local dat = fDesc:read "*a"
+
+    local res, reason, status = fDesc:close()
+
+    if res and status == 0 then
         return dat
     else
         return "0;0"
@@ -166,26 +218,50 @@ end, function(dat, new)
         return  --  No updates.
     end
 
-    if WID >= 120 then
+    local bgc, fgc = BGC "CC9900", FGC "000000"
+
+    if WID >= 210 and vline.utf8 then
         if us > 0 then
-            vline:add(BGC "AA5500", FGC "FFFFFF", " ", us, "/", ut, " ⚠ ")
+            vline:add(bgc, fgc, " 📡 ", us, "/", ut, " ⚠ ")
         else
-            vline:add(BGC "AA5500", FGC "FFFFFF", " ", ut, "! ")
+            vline:add(bgc, fgc, " 📡 ", ut, "! ")
+        end
+    elseif WID >= 120 then
+        if us > 0 then
+            vline:add(bgc, fgc, " ", us, "/", ut, UNIC " ⚠ | !! ")
+        else
+            vline:add(bgc, fgc, " ", ut, "! ")
         end
     elseif WID >= 100 then
         if us > 0 then
-            vline:add(BGC "AA5500", FGC "FFFFFF", " ", ut, " ⚠ ")
+            vline:add(bgc, fgc, " ", ut, UNIC " ⚠ | !! ")
         else
-            vline:add(BGC "AA5500", FGC "FFFFFF", " ", ut, "! ")
+            vline:add(bgc, fgc, " ", ut, "! ")
         end
     else
         if us > 0 then
-            vline:add(BGC "AA5500", FGC "FFFFFF", ut, "⚠")
+            vline:add(bgc, fgc, ut, UNIC "⚠|!!")
         else
-            vline:add(BGC "AA5500", FGC "FFFFFF", ut, "!")
+            vline:add(bgc, fgc, ut, "!")
         end
     end
 end)
+
+do
+    local fDesc, fErr = io.open("/var/run/reboot-required", "r")
+
+    if fDesc then
+        fDesc:close()
+
+        local bgc, fgc = BGC "EF0000", FGC "000000"
+
+        if WID >= 100 then
+            vline:add(bgc, fgc, UNIC " ⥁ | R ")
+        else
+            vline:add(bgc, fgc, UNIC "⥁|R")
+        end
+    end
+end
 
 return vline:print_tmux()
 
