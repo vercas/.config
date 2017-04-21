@@ -7,7 +7,7 @@
 # Store it to `~/bin/tmx` and issue `chmod +x`.
 #
 
-source ~/.config/bash-config.sh
+source $HOME/.config/shell-utilities.sh
 
 # Works because bash automatically trims by assigning to variables and by 
 # passing arguments

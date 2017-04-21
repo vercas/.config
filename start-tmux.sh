@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ~/.config/bash-config.sh
+source $HOME/.config/shell-utilities.sh
 
 if $TMX has-session 2> /dev/null; then
     echo "Session already exists!" 1>&2

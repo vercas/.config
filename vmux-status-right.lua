@@ -59,21 +59,21 @@ do
                     end
                 elseif uptime < 86400 then  --  Under a day.
                     if WID >= 210 and vline.utf8 then
-                        return " 💡 ", math.floor(uptime / 3600), "h ", FGC "666666", string.format("%dm ", (uptime / 60) % 60)
+                        return " 💡 ", math.floor(uptime / 3600), "h ", FGC "666666", math.floor((uptime / 60) % 60), "m "
                     elseif WID >= 100 then
-                        return " ", math.floor(uptime / 3600), "h ", FGC "666666", string.format("%dm ", (uptime / 60) % 60), UNIC "💡 |U "
+                        return " ", math.floor(uptime / 3600), "h ", FGC "666666", math.floor((uptime / 60) % 60), UNIC "m 💡 |m U "
                     elseif WID >= 70 then
-                        return math.floor(uptime / 3600), "h", FGC "666666", string.format("%dm", (uptime / 60) % 60), UNIC "💡|U"
+                        return math.floor(uptime / 3600), "h", FGC "666666", math.floor((uptime / 60) % 60), UNIC "m💡|mU"
                     else
                         return math.floor(uptime / 3600), "h"
                     end
                 else    --  Over a day.
                     if WID >= 210 then
-                        return " 💡 ", math.floor(uptime / 86400), "d ", FGC "666666", string.format("%dh ", (uptime / 3600) % 24)
+                        return " 💡 ", math.floor(uptime / 86400), "d ", FGC "666666", math.floor((uptime / 3600) % 24), "h "
                     elseif WID >= 100 then
-                        return " ", math.floor(uptime / 86400), "d ", FGC "666666", string.format("%dh ", (uptime / 3600) % 24), UNIC "💡 |U "
+                        return " ", math.floor(uptime / 86400), "d ", FGC "666666", math.floor((uptime / 3600) % 24), UNIC "h 💡 |h U "
                     elseif WID >= 70 then
-                        return math.floor(uptime / 86400), "d", FGC "666666", string.format("%dh", (uptime / 3600) % 24), UNIC "💡|U"
+                        return math.floor(uptime / 86400), "d", FGC "666666", math.floor((uptime / 3600) % 24), UNIC "h💡|hU"
                     else
                         return math.floor(uptime / 86400), "d"
                     end
@@ -109,19 +109,19 @@ end, function(dat, new)
 
     vline:add(BGC "22AA00", FGC "EEEEEE", function()
         if WID >= 210 and vline.utf8 then
-            return string.format("📕 %d%%/%s ", 100 * avl / total, BytesToHuman(total, 2, 9))
+            return "📕 ", math.floor(100 * avl / total), BytesToHuman(total, 2, 9), " "
         elseif WID >= 150 then
-            return string.format(" %d%%/%s ", 100 * avl / total, BytesToHuman(total, 2, 9)), UNIC "📕 |M"
+            return " ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 2, 9), UNIC " 📕 | M"
         elseif WID >= 120 then
-            return string.format(" %d%%/%s ", 100 * avl / total, BytesToHuman(total, 2)), UNIC "📕 |M"
+            return " ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 2), UNIC " 📕 | M"
         elseif WID >= 100 then
-            return string.format(" %d%%/%s ", 100 * avl / total, BytesToHuman(total, 0)), UNIC "📕 |M"
+            return " ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 0), UNIC " 📕 | M"
         elseif WID >= 80 then
-            return string.format("%d%%%s", 100 * avl / total, BytesToHuman(total, 0)), UNIC "📕|M"
+            return math.floor(100 * avl / total), "%", BytesToHuman(total, 0), UNIC "📕|M"
         elseif WID >= 50 or not vline.utf8 then
-            return string.format("%d%%", 100 * avl / total), UNIC "📕|M"
+            return math.floor(100 * avl / total), UNIC "%📕|%M"
         else
-            return string.format("%s📕", vline.get_bar(avl / total))
+            return vline.get_bar(avl / total), "📕"
         end
     end)
 end)

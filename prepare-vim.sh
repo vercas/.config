@@ -4,7 +4,7 @@
 VIMDIR=$HOME/.vim
 
 # Some goodies.
-source shell-utilities.sh
+source $HOME/.config/shell-utilities.sh
 
 # Create necessary directories.
 mkdir -p $VIMDIR/{bundle,backup,undo,swap}
