@@ -109,7 +109,7 @@ end, function(dat, new)
 
     vline:add(BGC "22AA00", FGC "EEEEEE", function()
         if WID >= 210 and vline.utf8 then
-            return "📕 ", math.floor(100 * avl / total), BytesToHuman(total, 2, 9), " "
+            return "📕 ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 2, 9), " "
         elseif WID >= 150 then
             return " ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 2, 9), UNIC " 📕 | M"
         elseif WID >= 120 then
