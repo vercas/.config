@@ -45,7 +45,7 @@ do
                     if WID >= 210 and vline.utf8 then
                         return " 💡 ", math.floor(uptime), "s"
                     elseif WID >= 100 then
-                        return math.floor(uptime), UNIC "s 💡|s U "
+                        return " ", math.floor(uptime), UNIC "s 💡 |s U "
                     else
                         return math.floor(uptime), "s"
                     end
@@ -53,7 +53,7 @@ do
                     if WID >= 210 and vline.utf8 then
                         return " 💡 ", math.floor(uptime / 60), "m"
                     elseif WID >= 100 then
-                        return math.floor(uptime / 60), UNIC "m 💡|m U "
+                        return " ", math.floor(uptime / 60), UNIC "m 💡 |m U "
                     else
                         return math.floor(uptime / 60), "m"
                     end
