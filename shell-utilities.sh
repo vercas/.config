@@ -35,7 +35,7 @@ esac
 CDIR="${HOME}/.config"
 HBDIR="${HOME}/bin"
 
-PATHSCRIPTS=(start-tmux.sh attach-to-tmux.sh tmux-extended.sh tmux-list-my-sessions.sh list-batteries.sh start-or-attach-to-tmux.sh)
+PATHSCRIPTS=(start-tmux.sh attach-to-tmux.sh tmux-extended.sh tmux-list-my-sessions.sh list-batteries.sh start-or-attach-to-tmux.sh tmux-respawnable.sh)
 
 if [[ ":${PATH}:" == *":${HBDIR}:"* ]]; then
     HAS_HBDIR=1

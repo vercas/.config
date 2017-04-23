@@ -8,6 +8,5 @@ if $TMX has-session 2> /dev/null; then
     exit 1
 fi
 
-$TMX new-session -d
-$TMX new-window
+source $CDIR/tmux-create-session.sh
 
