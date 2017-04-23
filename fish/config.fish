@@ -16,6 +16,10 @@ case 21d705be9a22b5b5ac7d64c1de6aa820d168a457
     switch (echo -n (uname) | sha1sum | head -c 40)
     case c12b02b9ecce6a5392bd7aaf12a084a573ea38d7
         set -g theme_color_scheme dark
+        set -gx PATH /usr/local/bin /usr/bin /bin $PATH
+        set -gx DISPLAY 127.0.0.1:0.0
+
+        eval (dircolors.exe -b | sed "s/LS_COLORS=/set -x LS_COLORS /")
     case '*'
         set -g theme_color_scheme base16-light
     end
@@ -24,6 +28,8 @@ case 27d30547559b399e16c744df4c2bcbd41974851b
 case 7e7f4d3b88269bca7efea6939d35ae537028f864
     set -gx GOPATH "$HOME/go"
 end
+
+set -x EDITOR vim
 
 if not contains ~/bin $PATH
     set -gx PATH ~/bin $PATH
