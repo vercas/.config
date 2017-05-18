@@ -11,6 +11,10 @@ if CID then
     vline:set_id(CID)
 end
 
+if settings.force_utf8 ~= nil then
+    vline:set_utf8(settings.force_utf8)
+end
+
 if settings.show_date and settings.show_time then
     vline:add(BGC "000000", FGC "EEEE22", function()
         if WID >= 130 then

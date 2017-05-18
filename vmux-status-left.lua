@@ -1,6 +1,7 @@
 #!/usr/bin/env lua
 WID = tonumber(arg[1])
 CID = tonumber(arg[2])
+PRF = tonumber(arg[3])
 
 package.path = string.format("%s;%s%s", package.path, os.getenv "HOME", "/.config/?.lua")
 
@@ -9,6 +10,10 @@ require "vmux-settings"
 
 if CID then
     vline:set_id(CID)
+end
+
+if settings.force_utf8 ~= nil then
+    vline:set_utf8(settings.force_utf8)
 end
 
 if settings.show_hostname then
@@ -56,6 +61,14 @@ if settings.show_username then
             end
         end
     end)
+end
+
+if settings.show_prefix and PRF == 1 then
+    if WID >= 130 then
+        vline:add(BGC "000000", FGC "EEEE22", UNIC " ∧ | ^ ")
+    else
+        vline:add(BGC "000000", FGC "EEEE22", UNIC "∧|^")
+    end
 end
 
 return vline:print_tmux(true)

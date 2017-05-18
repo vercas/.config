@@ -15,6 +15,14 @@ _G.vline = setmetatable({}, {
     __metatable = "Nawpe.",
 })
 
+function vline:set_utf8(val)
+    if type(val) ~= "boolean" then
+        error("UTF8 must be a boolean.")
+    end
+
+    vline.utf8 = val
+end
+
 function vline:set_id(num)
     if type(num) ~= "number" or num < 0 or num % 1 ~= 0 then
         error("ID must be a positive integer.")
