@@ -122,6 +122,7 @@ Plugin 'changyuheng/color-scheme-holokai-for-vim'   " Pretty theme.
 Plugin 'dag/vim-fish'                               " I hate fish but I love Fish.
 Plugin 'gabrielelana/vim-markdown'                  " Meh.
 Plugin 'mutewinter/nginx.vim'                       " Lovely webserver.
+Plugin 'tmux-plugins/vim-tmux'                      " Lovely terminal multiplexer.
 
 Plugin 'ervandew/supertab'                          " Use of Tab to navigate completion menu.
 
