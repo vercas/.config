@@ -17,6 +17,7 @@ local settings = {
     show_session = true,
     show_username = true,
     show_hostname = true,
+    show_prefix = true,
 }
 _G.settings = settings
 
