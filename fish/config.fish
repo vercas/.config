@@ -29,7 +29,12 @@ case 7e7f4d3b88269bca7efea6939d35ae537028f864
     set -gx GOPATH "$HOME/go"
 end
 
-set -x EDITOR vim
+set -gx EDITOR vim
+set -gx LESS ' -R '
+
+if test -x '/usr/share/source-highlight/src-hilite-lesspipe.sh'
+    set -gx LESSOPEN '| /usr/share/source-highlight/src-hilite-lesspipe.sh %s'
+end
 
 if not contains ~/bin $PATH
     set -gx PATH ~/bin $PATH
