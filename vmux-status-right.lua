@@ -35,7 +35,7 @@ if settings.show_date and settings.show_time then
             if vline.utf8 then
                 return string.format(os.date("%m-%d %%s %M", vline.time), vline.get_clock())
             else
-                return os.date("%m-%d %M:%S", vline.time)
+                return os.date("%m-%d %H:%M", vline.time)
             end
         end
     end)
@@ -75,7 +75,7 @@ elseif settings.show_time then
             if vline.utf8 then
                 return string.format(os.date("%%s %M", vline.time), vline.get_clock())
             else
-                return os.date("%M:%S", vline.time)
+                return os.date("%H:%M", vline.time)
             end
         end
     end)
