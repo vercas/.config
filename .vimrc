@@ -14,6 +14,12 @@ endif
 set encoding=utf-8
 set termencoding=utf-8
 
+"""""""""""""
+"   Escaping.
+
+set timeoutlen=500
+set ttimeoutlen=50
+
 """"""""""""""""""
 "   Mouse support.
 
