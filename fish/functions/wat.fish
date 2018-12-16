@@ -5,7 +5,7 @@ function wat -d "Runs 'll', 'bat', or 'less', depending on which is the right on
         if test -d $argv[1]
             ll $argv
         else if test -f $argv[1]
-            if which bat
+            if which bat > /dev/null
                 bat $argv
             else
                 less $argv
