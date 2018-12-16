@@ -1,3 +1,7 @@
 function ll -w ls
-    ls -lAhF --color=auto $argv
+    if which lsd
+        lsd -laF $argv
+    else
+        ls -lAhF --color=auto $argv
+    end
 end
