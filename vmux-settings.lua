@@ -10,6 +10,7 @@ local settings = {
     show_uptime = true,
     show_memory = true,
     show_load = true,
+    show_containers = true,
     show_vms = true,
     show_apt_updates = true,
     show_restart = true,

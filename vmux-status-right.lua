@@ -117,7 +117,7 @@ if settings.show_uptime then
                         return math.floor(uptime / 3600), "h"
                     end
                 else    --  Over a day.
-                    if WID >= 210 then
+                    if WID >= 210 and vline.utf8 then
                         return " 💡 ", math.floor(uptime / 86400), "d ", FGC "666666", math.floor((uptime / 3600) % 24), "h "
                     elseif WID >= 100 then
                         return " ", math.floor(uptime / 86400), "d ", FGC "666666", math.floor((uptime / 3600) % 24), UNIC "h 💡 |h U "
@@ -161,11 +161,11 @@ if settings.show_memory then
             if WID >= 210 and vline.utf8 then
                 return "📕 ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 2, 9), " "
             elseif WID >= 150 then
-                return " ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 2, 9), UNIC " 📕 | M"
+                return " ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 2, 9), UNIC " 📕 | M "
             elseif WID >= 120 then
-                return " ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 2), UNIC " 📕 | M"
+                return " ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 2), UNIC " 📕 | M "
             elseif WID >= 100 then
-                return " ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 0), UNIC " 📕 | M"
+                return " ", math.floor(100 * avl / total), "%/", BytesToHuman(total, 0), UNIC " 📕 | M "
             elseif WID >= 80 then
                 return math.floor(100 * avl / total), "%", BytesToHuman(total, 0), UNIC "📕|M"
             elseif WID >= 50 or not vline.utf8 then
@@ -214,6 +214,41 @@ if settings.show_load then
             end)())
         end
     end
+end
+
+if settings.show_containers then
+    vline.cache("docker", 60, function()
+        local fDesc = io.popen([[echo -n "$(docker ps -q | wc -l)" "$(docker ps -aq | wc -l )"]])
+
+        local dat = fDesc:read "*a"
+
+        local res, reason, status = fDesc:close()
+
+        if res and status == 0 then
+            return dat
+        else
+            return "0\t0"
+        end
+    end, function(dat, new)
+        local act, tot = dat:match "^(%d+)%s+(%d+)$"
+        act, tot = tonumber(act), tonumber(tot)
+
+        if not act or not tot or tot == 0 then
+            return  --  No data, invalid data, or simply no VMs.
+        end
+
+        local bgc, fgc = BGC "0DB7ED", FGC "384D54"
+
+        if WID >= 210 then
+            vline:add(bgc, fgc, UNIC " 📦 | ", act, "/", tot," CTs ")
+        elseif WID >= 120 then
+            vline:add(bgc, fgc, " ", act, "/", tot, UNIC " 📦 | CTs ")
+        elseif WID >= 100 then
+            vline:add(bgc, fgc, " ", act, "/", tot, UNIC " 📦 |C ")
+        else
+            vline:add(bgc, fgc, act, "/", tot, UNIC "📦|C")
+        end
+    end)
 end
 
 if settings.show_vms then
