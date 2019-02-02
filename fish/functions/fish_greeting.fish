@@ -31,5 +31,9 @@ function fish_greeting
     else if test -x $aptc
         eval $aptc --human-readable $cows
     end
+
+    if type -qf tb then
+        tb --list pending
+    end
 end
 
