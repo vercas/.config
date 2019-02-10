@@ -129,6 +129,8 @@ Plugin 'dag/vim-fish'                               " I hate fish but I love Fis
 Plugin 'gabrielelana/vim-markdown'                  " Meh.
 Plugin 'mutewinter/nginx.vim'                       " Lovely webserver.
 Plugin 'tmux-plugins/vim-tmux'                      " Lovely terminal multiplexer.
+Plugin 'VaiN474/vim-etlua'                          " Templates.
+Plugin 'leafo/moonscript-vim'                       " Munscript
 
 Plugin 'ervandew/supertab'                          " Use of Tab to navigate completion menu.
 
