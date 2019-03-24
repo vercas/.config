@@ -1,5 +1,5 @@
 function ll -w ls
-    if which lsd > /dev/null
+    if type -q lsd
         lsd -laF $argv --color always --icon always | less -RFX
     else
         ls -lAhF --color=auto $argv
