@@ -11,14 +11,12 @@ endif
 """"""""""
 "   UTF-8.
 
-set encoding=utf-8
 set termencoding=utf-8
 
 """""""""""""
 "   Escaping.
 
 set timeoutlen=500
-set ttimeoutlen=50
 
 """"""""""""""""""
 "   Mouse support.
@@ -34,15 +32,14 @@ set backup
 set writebackup
 set undofile
 
-set backupdir=~/.vim/backup//
-set directory=~/.vim/swap//
-set undodir=~/.vim/undo//
+set backupdir=~/.local/share/nvim/backup//
+set directory=~/.local/share/nvim/swap//
+set undodir=~/.local/share/nvim/undo//
 
 """""""""""""""""""
 "   Tab completion.
 
 set wildmode=longest,list
-set wildmenu
 
 """"""""""""""""
 "   Line numbas.
@@ -104,6 +101,11 @@ set ffs=unix
 let g:airline_powerline_fonts = 1
 set laststatus=2
 
+"""""""""""""""""""""""""
+"   neogdb configuration.
+
+let g:neobugger_leader = ';'
+
 """""""""""""""
 "   Vundle!   "
 """""""""""""""
@@ -114,15 +116,18 @@ filetype off
 
 " Set the runtime path to include Vundle and initialize!
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+set rtp+=~/.config/nvim/bundle/Vundle.vim
+call vundle#begin('~/.config/nvim/bundle')
 
 Plugin 'VundleVim/Vundle.vim'                       " Bootstrap Vundle.
 
 Plugin 'LucHermitte/lh-vim-lib'                     " Apparently, utilities.
 Plugin 'LucHermitte/local_vimrc'                    " For local configurations.
+Plugin 'terryma/vim-multiple-cursors'               " Multiple cursors FTW.
+Plugin 'tpope/vim-surround'                         " Surrounding stuff with stuff.
 
 Plugin 'mhinz/vim-startify'                         " Just a gimmick.
+Plugin 'vimwiki/vimwiki' 			    " And another.
 
 Plugin 'changyuheng/color-scheme-holokai-for-vim'   " Pretty theme.
 Plugin 'dag/vim-fish'                               " I hate fish but I love Fish.
@@ -138,6 +143,7 @@ Plugin 'tpope/vim-fugitive'                         " Git support (handy for Air
 Plugin 'airblade/vim-gitgutter'                     " Shows changes in a gutter.
 
 Plugin 'mbbill/undotree'                            " For those times when I fuck up colossally.
+Plugin 'huawenyu/neogdb.vim'                        " For when I fuck up even worse.
 
 "Plugin 'bling/vim-bufferline'                       " Meh
 Plugin 'vim-airline/vim-airline'                    " Godlike addition!
@@ -147,6 +153,7 @@ Plugin 'vim-airline/vim-airline-themes'             " More goodiness.
 
 Plugin 'vim-syntastic/syntastic'                    " Mainly to piss me off.
 Plugin 'itchyny/vim-cursorword'                     " Lazy searching.
+Plugin 'arakashic/chromatica.nvim'                  " Awesome syntax for C-like languages.
 
 Plugin 'Raimondi/delimitMate'                       " More laziness.
 
@@ -177,4 +184,5 @@ let g:syntastic_check_on_wq = 0
 "   Airline.
 
 let g:airline#extensions#tabline#enabled = 1
+
 

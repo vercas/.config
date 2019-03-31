@@ -46,5 +46,8 @@ thefuck/__pycache__/
 .byobu/windows
 .byobu/windows.tmux
 
+#       NeoVim
+/nvim/bundle/
+
 # TODO: Handle Sublime properly.
 
