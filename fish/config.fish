@@ -27,6 +27,8 @@ case 27d30547559b399e16c744df4c2bcbd41974851b
     set -g theme_color_scheme terminal-dark
 case 7e7f4d3b88269bca7efea6939d35ae537028f864
     set -gx GOPATH "$HOME/go"
+case 515dd919689cf68643e573f27d47aef3897e66a3
+    set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
 end
 
 set -gx EDITOR vim
