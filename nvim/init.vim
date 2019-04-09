@@ -150,6 +150,7 @@ Plugin 'vim-airline/vim-airline'                    " Godlike addition!
 Plugin 'vim-airline/vim-airline-themes'             " More goodiness.
 
 "Plugin 'edkolev/tmuxline.vim'                       " Test.
+Plugin 'rliang/termedit.nvim'                       " To make editing much easier.
 
 Plugin 'vim-syntastic/syntastic'                    " Mainly to piss me off.
 Plugin 'itchyny/vim-cursorword'                     " Lazy searching.
@@ -185,4 +186,8 @@ let g:syntastic_check_on_wq = 0
 
 let g:airline#extensions#tabline#enabled = 1
 
+"""""""""""""""""
+"   Key bindings.
+
+tnoremap <Esc> <C-\><C-n>
 
