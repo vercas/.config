@@ -13,7 +13,6 @@ orage/
 pulse/
 QtProject/
 quassel-irc.org/
-sublime-text-3/
 Thunar/
 xfce4/
 
@@ -49,5 +48,15 @@ thefuck/__pycache__/
 #       NeoVim
 /nvim/bundle/
 
-# TODO: Handle Sublime properly.
+#       Sublime Text 3
+/sublime-text-3/Cache/
+/sublime-text-3/Index/
+/sublime-text-3/Installed Packages/
+/sublime-text-3/Lib/
+/sublime-text-3/Local/
+/sublime-text-3/Packages/*
+!/sublime-text-3/Packages/User
+/sublime-text-3/Packages/User/*
+!/sublime-text-3/Packages/User/Default (Linux).sublime-keymap
+!/sublime-text-3/Packages/User/Terminus.sublime-settings
 
