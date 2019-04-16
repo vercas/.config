@@ -152,7 +152,7 @@ Plugin 'vim-airline/vim-airline-themes'             " More goodiness.
 "Plugin 'edkolev/tmuxline.vim'                       " Test.
 Plugin 'rliang/termedit.nvim'                       " To make editing much easier.
 
-Plugin 'vim-syntastic/syntastic'                    " Mainly to piss me off.
+"Plugin 'vim-syntastic/syntastic'                    " Mainly to piss me off.
 Plugin 'itchyny/vim-cursorword'                     " Lazy searching.
 Plugin 'arakashic/chromatica.nvim'                  " Awesome syntax for C-like languages.
 
