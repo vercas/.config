@@ -1,0 +1,8 @@
+[
+    { 
+        "keys": ["ctrl+alt+t"], "command": "terminus_open", "args": {
+            "cmd": ["fish", "-i", "-l"],
+            "cwd": "${file_path:${folder}}"
+        }
+    }
+]
