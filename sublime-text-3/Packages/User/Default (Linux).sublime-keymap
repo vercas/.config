@@ -1,8 +1,21 @@
 [
     { 
-        "keys": ["ctrl+alt+t"], "command": "terminus_open", "args": {
+        "keys": ["ctrl+alt+t"],
+        "command": "terminus_open",
+        "args":
+        {
             "cmd": ["fish", "-i", "-l"],
             "cwd": "${file_path:${folder}}"
         }
+    },
+    {
+        "keys": ["ctrl+w"],
+        "command": "terminus_close",
+        "context":
+        [
+            {
+                "key": "terminus_view"
+            }
+        ]
     }
 ]

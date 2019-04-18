@@ -4,6 +4,7 @@
 
     "view_settings": {
         "font_face": "DroidSansMono Nerd Font Mono",
+        "rulers": [ ],
     },
 
     "theme": "user",
