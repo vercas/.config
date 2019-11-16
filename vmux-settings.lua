@@ -42,7 +42,7 @@ if fDesc then
     local text = fDesc:read "*a"
     fDesc:close()
 
-    loadstring(text, "~/.vmux.conf.lua")()
+    load(text, "~/.vmux.conf.lua")()
 end
 
 if arg and arg[0]:match "vmux-settings.lua$" and arg[1] then
