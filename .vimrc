@@ -178,3 +178,7 @@ let g:syntastic_check_on_wq = 0
 
 let g:airline#extensions#tabline#enabled = 1
 
+"""""""""""""""""""
+"   Save with sudo.
+command W :execute ':silent w !sudo tee % > /dev/null' | :edit!
+
