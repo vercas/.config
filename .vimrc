@@ -148,6 +148,10 @@ Plugin 'vim-airline/vim-airline-themes'             " More goodiness.
 Plugin 'vim-syntastic/syntastic'                    " Mainly to piss me off.
 Plugin 'itchyny/vim-cursorword'                     " Lazy searching.
 
+Plugin 'SirVer/ultisnips'                           " Shnippets!
+
+Plugin 'majutsushi/tagbar'                          " Tags and stuff
+
 Plugin 'Raimondi/delimitMate'                       " More laziness.
 
 call vundle#end()
@@ -181,4 +185,11 @@ let g:airline#extensions#tabline#enabled = 1
 """""""""""""""""""
 "   Save with sudo.
 command W :execute ':silent w !sudo tee % > /dev/null' | :edit!
+
+""""""""""""""""""""""""""""""""""""
+"   UltiSnips trigger configuration.
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsEditSplit="vertical"
 
