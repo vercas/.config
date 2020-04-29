@@ -31,6 +31,8 @@ case 7e7f4d3b88269bca7efea6939d35ae537028f864
 case 515dd919689cf68643e573f27d47aef3897e66a3
     set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
     set -gx LC_ALL 'en_GB.UTF-8'
+case 8ae010365d154fa313ec8d99703227032fe8434f
+    set -gx LC_ALL 'en_GB.UTF-8'
 end
 
 set -gx EDITOR vim
