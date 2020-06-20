@@ -42,6 +42,9 @@ if test -x '/usr/share/source-highlight/src-hilite-lesspipe.sh'
     set -gx LESSOPEN '| /usr/share/source-highlight/src-hilite-lesspipe.sh %s'
 end
 
+if not contains ~/.cargo/bin $PATH
+    set -gx PATH ~/.cargo/bin $PATH
+end
 if not contains ~/.local/bin $PATH
     set -gx PATH ~/.local/bin $PATH
 end
