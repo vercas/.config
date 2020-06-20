@@ -49,7 +49,7 @@ if not contains ~/bin $PATH
     set -gx PATH ~/bin $PATH
 end
 
-if test -S '/tmp/vercas.ssh.agent.socket'
-    set -gx SSH_AUTH_SOCK '/tmp/vercas.ssh.agent.socket'
+if test -S '~/.ssh/ssh_auth_sock'
+    set -gx SSH_AUTH_SOCK '~/.ssh/ssh_auth_sock'
 end
 
