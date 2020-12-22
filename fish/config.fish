@@ -42,14 +42,17 @@ if test -x '/usr/share/source-highlight/src-hilite-lesspipe.sh'
     set -gx LESSOPEN '| /usr/share/source-highlight/src-hilite-lesspipe.sh %s'
 end
 
-if not contains ~/.cargo/bin $PATH
+if test -d ~/.cargo/bin; and not contains ~/.cargo/bin $PATH
     set -gx PATH ~/.cargo/bin $PATH
 end
-if not contains ~/.local/bin $PATH
+if test -d ~/.local/bin; and not contains ~/.local/bin $PATH
     set -gx PATH ~/.local/bin $PATH
 end
-if not contains ~/bin $PATH
+if test -d ~/bin; and not contains ~/bin $PATH
     set -gx PATH ~/bin $PATH
+end
+if test -d '/usr/lib/icecc/bin'; and not contains '/usr/lib/icecc/bin' $PATH
+    set -gx PATH '/usr/lib/icecc/bin' $PATH
 end
 
 if test -S '~/.ssh/ssh_auth_sock'
