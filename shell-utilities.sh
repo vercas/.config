@@ -33,7 +33,7 @@ case "$HNS" in
 esac
 
 CDIR="${HOME}/.config"
-HBDIR="${HOME}/bin"
+HBDIR="${HOME}/.local/bin"
 
 PATHSCRIPTS=(start-tmux.sh attach-to-tmux.sh tmux-extended.sh tmux-list-my-sessions.sh list-batteries.sh start-or-attach-to-tmux.sh tmux-respawnable.sh)
 
