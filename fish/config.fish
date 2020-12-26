@@ -2,6 +2,8 @@ set loadOMF true
 switch (echo -n (hostname) | sha1sum | head -c 40)
 case 32e0b51e8f1b29f3cd198cafe2bb9d64b5e72ede
     set loadOMF false
+case bd5eb4fcacf73247ba9158e24305aed4ea038c74
+    set loadOMF false
 end
 
 if $loadOMF
