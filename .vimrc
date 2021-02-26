@@ -131,6 +131,7 @@ Plugin 'mutewinter/nginx.vim'                       " Lovely webserver.
 Plugin 'tmux-plugins/vim-tmux'                      " Lovely terminal multiplexer.
 Plugin 'VaiN474/vim-etlua'                          " Templates.
 Plugin 'leafo/moonscript-vim'                       " Munscript
+Plugin 'machakann/vim-highlightedyank'              " Me forget.
 
 Plugin 'ervandew/supertab'                          " Use of Tab to navigate completion menu.
 
