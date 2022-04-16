@@ -4,7 +4,7 @@ local settings = {
     hostname = os.getenv "HOSTNAME",
     refresh_rate = 1,
 
-    show_date = true,
+    show_date = false,
     show_time = true,
 
     show_uptime = true,
@@ -15,8 +15,8 @@ local settings = {
     show_apt_updates = true,
     show_restart = true,
 
-    show_session = true,
-    show_username = true,
+    show_session = false,
+    show_username = false,
     show_hostname = true,
     show_prefix = true,
 }
