@@ -357,8 +357,10 @@ end
 ---------------------------------------------------------------------
 --  Data Caching
 
+local cache_dir = os.getenv("XDG_RUNTIME_DIR") or "/tmp"
+
 function vline.cache(name, timeout, producer, consumer)
-    local fName = "/tmp/vline.cache." .. name .. "." .. (vline.id or "anon")
+    local fName = cache_dir .. "/vline.cache." .. name .. "." .. (vline.id or "anon")
 
     local fDesc, fErr = io.open(fName, "r")
 
@@ -414,6 +416,8 @@ end
 ---------------------------------------------------------------------
 --  Logging
 
+local log_dir = os.getenv("XDG_RUNTIME_DIR") or "/tmp"
+
 function vline.log(...)
     local dat, res = {...}, { os.date "[%Y-%m-%d %H:%M:%S] " }
 
@@ -445,7 +449,7 @@ function vline.log(...)
         res[#res + 1] = "\n"
     end
 
-    local fDesc, fErr = io.open("/tmp/vline.log." .. (vline.id or "anon"), "a")
+    local fDesc, fErr = io.open(log_dir .. "/vline.log." .. (vline.id or "anon"), "a")
 
     if not fDesc then
         error("Failed to open log file: " .. fErr, 2)

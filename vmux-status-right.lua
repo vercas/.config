@@ -13,6 +13,25 @@ end
 
 if settings.force_utf8 ~= nil then
     vline:set_utf8(settings.force_utf8)
+else
+    vline.cache("undermosh", 120, function()
+        local fDesc, fErr = io.popen("pstree -s " .. CID)
+
+        if fDesc then
+            local result = fDesc:read "*a"
+            fDesc:close()
+
+            if result then
+                return result:find("mosh-server", 1, true) or ""
+            end
+        end
+
+        return ""
+    end, function(dat, new)
+        if dat ~= "" then
+            vline:set_utf8(false)
+        end
+    end)
 end
 
 if settings.show_date and settings.show_time then
