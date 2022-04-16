@@ -82,11 +82,19 @@ if settings.show_username then
     end)
 end
 
-if settings.show_prefix and PRF == 1 then
-    if WID >= 130 then
-        vline:add(BGC "000000", FGC "EEEE22", UNIC " ∧ | ^ ")
+if settings.show_prefix then
+    if PRF == 1 then
+        if WID >= 130 then
+            vline:add(BGC "000011", FGC "EEEE00", UNIC " ∧ | ^ ")
+        else
+            vline:add(BGC "000011", FGC "EEEE00", UNIC "∧|^")
+        end
     else
-        vline:add(BGC "000000", FGC "EEEE22", UNIC "∧|^")
+        if WID >= 130 then
+            vline:add(BGC "000011", FGC "EEEE00", "   ")
+        else
+            vline:add(BGC "000011", FGC "EEEE00", " ")
+        end
     end
 end
 
