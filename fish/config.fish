@@ -29,8 +29,17 @@ end
 if test -d ~/.cargo/bin; and not contains ~/.cargo/bin $PATH
     set -gx PATH ~/.cargo/bin $PATH
 end
+if test -d ~/.luarocks/bin; and not contains ~/.luarocks/bin $PATH
+    set -gx PATH ~/.luarocks/bin $PATH
+end
 
 if test -S '~/.ssh/ssh_auth_sock'
     set -gx SSH_AUTH_SOCK '~/.ssh/ssh_auth_sock'
+end
+
+#source "$HOME/.config/fish/iterm2_shell_integration.fish"
+
+if which dotnet
+    set -gx DOTNET_CLI_TELEMETRY_OPTOUT true
 end
 
