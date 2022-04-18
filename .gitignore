@@ -1,4 +1,5 @@
 #	Miscellaneous, or simply no idea what these are.
+Autodesk/
 dconf/
 deluge/
 fontconfig/
@@ -6,6 +7,9 @@ gedit/
 gtk-2.0/
 gtk-3.0/
 htop/
+iterm2/
+joplin-desktop/
+karabiner/
 keepassx/
 micro/
 nautilus/
@@ -13,7 +17,9 @@ orage/
 pulse/
 QtProject/
 quassel-irc.org/
+rclone/
 Thunar/
+wireshark/
 xfce4/
 
 Trolltech.conf
@@ -30,7 +36,17 @@ fish/fishd.*
 fish/fish_history
 
 #	Fish installed shenanigans.
+fish/completion/fisher.fish
+fish/completion/tide.fish
+fish/conf.d/
+fish/fish_plugins
+fish/fish_variables
+fish/functions/_tide_*.fish
+fish/functions/fish_mode_prompt.fish
 fish/functions/fish_prompt.fish
+fish/functions/fisher.fish
+fish/functions/tide.fish
+fish/functions/tide/
 
 #	The fuck?
 thefuck/__pycache__/
