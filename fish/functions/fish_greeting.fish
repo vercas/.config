@@ -32,8 +32,10 @@ function fish_greeting
         eval $aptc --human-readable $cows
     end
 
-    if type -qf tb then
+    if type -qf tb
         tb --list pending
+    else if test -f $HOME/.todo
+        cat $HOME/.todo
     end
 end
 
