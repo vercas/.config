@@ -39,7 +39,7 @@ end
 
 #source "$HOME/.config/fish/iterm2_shell_integration.fish"
 
-if which dotnet
+if which dotnet > /dev/null 2> /dev/null
     set -gx DOTNET_CLI_TELEMETRY_OPTOUT true
 end
 
