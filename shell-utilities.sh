@@ -21,7 +21,7 @@ function backUp {
     # Move the file/directory, and also don't overwrite anything, in case something else created the file/directory after the loop above but before the copy command.
 }
 
-HNS=$(echo -n `hostname` | sha1sum | head -c 40)
+HNS=$(echo -n "$HOSTNAME" | sha1sum | head -c 40)
 
 case "$HNS" in
 7e7f4d3b88269bca7efea6939d35ae537028f864)

@@ -1,4 +1,4 @@
-switch (echo -n (hostname) | sha1sum | head -c 40)
+switch (echo -n $hostname | sha1sum | head -c 40)
 case 27d30547559b399e16c744df4c2bcbd41974851b
     set -g theme_color_scheme terminal-dark
 case 7e7f4d3b88269bca7efea6939d35ae537028f864
@@ -33,13 +33,17 @@ if test -d ~/.luarocks/bin; and not contains ~/.luarocks/bin $PATH
     set -gx PATH ~/.luarocks/bin $PATH
 end
 
-if test -S '~/.ssh/ssh_auth_sock'
-    set -gx SSH_AUTH_SOCK '~/.ssh/ssh_auth_sock'
+if test -S "$HOME/.ssh/ssh_auth_sock"
+    set -gx SSH_AUTH_SOCK "$HOME/.ssh/ssh_auth_sock"
 end
 
 #source "$HOME/.config/fish/iterm2_shell_integration.fish"
 
 if which dotnet > /dev/null 2> /dev/null
     set -gx DOTNET_CLI_TELEMETRY_OPTOUT true
+end
+
+if test -e "/home/linuxbrew/.linuxbrew/bin/brew" > /dev/null 2> /dev/null
+    eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 end
 
