@@ -39,11 +39,15 @@ end
 
 #source "$HOME/.config/fish/iterm2_shell_integration.fish"
 
-if which dotnet > /dev/null 2> /dev/null
-    set -gx DOTNET_CLI_TELEMETRY_OPTOUT true
-end
-
 if test -e "/home/linuxbrew/.linuxbrew/bin/brew" > /dev/null 2> /dev/null
     eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+end
+
+if test -d "/home/linuxbrew/.linuxbrew/opt/dotnet/libexec"
+    set -gx DOTNET_ROOT "/home/linuxbrew/.linuxbrew/opt/dotnet/libexec"
+end
+
+if which dotnet > /dev/null 2> /dev/null
+    set -gx DOTNET_CLI_TELEMETRY_OPTOUT true
 end
 
