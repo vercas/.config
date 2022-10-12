@@ -21,16 +21,16 @@ if test -d '/usr/lib/icecc/bin'; and not contains '/usr/lib/icecc/bin' $PATH
     set -gx PATH '/usr/lib/icecc/bin' $PATH
 end
 if test -d ~/bin; and not contains ~/bin $PATH
-    set -gx PATH ~/bin $PATH
+    set -gxp PATH ~/bin
 end
 if test -d ~/.local/bin; and not contains ~/.local/bin $PATH
-    set -gx PATH ~/.local/bin $PATH
+    set -gxp PATH ~/.local/bin
 end
 if test -d ~/.cargo/bin; and not contains ~/.cargo/bin $PATH
-    set -gx PATH ~/.cargo/bin $PATH
+    set -gxp PATH ~/.cargo/bin
 end
 if test -d ~/.luarocks/bin; and not contains ~/.luarocks/bin $PATH
-    set -gx PATH ~/.luarocks/bin $PATH
+    set -gxp PATH ~/.luarocks/bin
 end
 
 if test -S "$HOME/.ssh/ssh_auth_sock"
