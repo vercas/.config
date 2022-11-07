@@ -21,22 +21,22 @@ if test -e "/home/linuxbrew/.linuxbrew/bin/brew" > /dev/null 2> /dev/null
     eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 end
 
-if test -d '/usr/lib/icecc/bin'; and not contains '/usr/lib/icecc/bin' $PATH
-    set -gx PATH '/usr/lib/icecc/bin' $PATH
+function __vconfig_add_path
+    if test -d $argv[1]; and not contains $argv[1] $PATH
+        if test "$argv[2]" = "--append"
+            set -gxa PATH $argv[1]
+        else
+            set -gxp PATH $argv[1]
+        end
+    end
 end
 
-if test -d ~/bin; and not contains ~/bin $PATH
-    set -gxp PATH ~/bin
-end
-if test -d ~/.local/bin; and not contains ~/.local/bin $PATH
-    set -gxp PATH ~/.local/bin
-end
-if test -d ~/.cargo/bin; and not contains ~/.cargo/bin $PATH
-    set -gxp PATH ~/.cargo/bin
-end
-if test -d ~/.luarocks/bin; and not contains ~/.luarocks/bin $PATH
-    set -gxp PATH ~/.luarocks/bin
-end
+__vconfig_add_path ~/.dotnet/tools --append
+__vconfig_add_path /usr/lib/icecc/bin
+__vconfig_add_path ~/.cargo/bin
+__vconfig_add_path ~/.luarocks/bin
+__vconfig_add_path ~/bin
+__vconfig_add_path ~/.local/bin
 
 if test -S "$HOME/.ssh/ssh_auth_sock"
     set -gx SSH_AUTH_SOCK "$HOME/.ssh/ssh_auth_sock"
