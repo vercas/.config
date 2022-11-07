@@ -152,7 +152,7 @@ Plugin 'vim-airline/vim-airline-themes'             " More goodiness.
 Plugin 'vim-syntastic/syntastic'                    " Mainly to piss me off.
 Plugin 'itchyny/vim-cursorword'                     " Lazy searching.
 
-Plugin 'SirVer/ultisnips'                           " Shnippets!
+"Plugin 'SirVer/ultisnips'                           " Shnippets!
 
 Plugin 'majutsushi/tagbar'                          " Tags and stuff
 
