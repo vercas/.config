@@ -1,7 +1,13 @@
 #	Miscellaneous, or simply no idea what these are.
+akregatorrc
+alderon-games-launcher/
+Alderon Games/
 Autodesk/
 dconf/
 deluge/
+EmuDeck/
+Epic/
+fish.working/
 fontconfig/
 gedit/
 gtk-2.0/
@@ -10,17 +16,34 @@ htop/
 iterm2/
 joplin-desktop/
 karabiner/
+KDE/
 keepassx/
 micro/
 nautilus/
 orage/
+PCSX2/
+plasma-localerc
+plasma-org.kde.plasma.desktop-appletsrc
+plasma_calendar_astronomicalevents
+plasma_calendar_holiday_regions
+plasmanotifyrc
+plasmarc
+plasmashellrc
+powerdevilrc
+powermanagementprofilesrc
 pulse/
 QtProject/
 quassel-irc.org/
 rclone/
+Ryujinx/
 Thunar/
+trashrc
 wireshark/
 xfce4/
+xsettingsd/
+yuzu/
+yuzu_bak/
+Yubico/
 
 Trolltech.conf
 
