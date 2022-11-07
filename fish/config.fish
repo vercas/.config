@@ -17,9 +17,14 @@ if test -x '/usr/share/source-highlight/src-hilite-lesspipe.sh'
     set -gx LESSOPEN '| /usr/share/source-highlight/src-hilite-lesspipe.sh %s'
 end
 
+if test -e "/home/linuxbrew/.linuxbrew/bin/brew" > /dev/null 2> /dev/null
+    eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+end
+
 if test -d '/usr/lib/icecc/bin'; and not contains '/usr/lib/icecc/bin' $PATH
     set -gx PATH '/usr/lib/icecc/bin' $PATH
 end
+
 if test -d ~/bin; and not contains ~/bin $PATH
     set -gxp PATH ~/bin
 end
@@ -43,10 +48,6 @@ if set -q KITTY_INSTALLATION_DIR; and not set -q KITTY_SHELL_INTEGRATION
     set --global KITTY_SHELL_INTEGRATION enabled
     source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
     set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
-end
-
-if test -e "/home/linuxbrew/.linuxbrew/bin/brew" > /dev/null 2> /dev/null
-    eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 end
 
 if test -d "/home/linuxbrew/.linuxbrew/opt/dotnet/libexec"
