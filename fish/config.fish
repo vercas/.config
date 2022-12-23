@@ -11,7 +11,7 @@ case 8ae010365d154fa313ec8d99703227032fe8434f
 end
 
 set -gx EDITOR vim
-set -gx LESS ' -R '
+set -gx LESS '-R --mouse --wheel-lines=3'
 
 if test -x '/usr/share/source-highlight/src-hilite-lesspipe.sh'
     set -gx LESSOPEN '| /usr/share/source-highlight/src-hilite-lesspipe.sh %s'
