@@ -59,8 +59,8 @@ fish/fishd.*
 fish/fish_history
 
 #	Fish installed shenanigans.
-fish/completion/fisher.fish
-fish/completion/tide.fish
+fish/completions/fisher.fish
+fish/completions/tide.fish
 fish/conf.d/
 fish/fish_plugins
 fish/fish_variables
