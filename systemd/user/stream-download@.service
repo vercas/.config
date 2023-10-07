@@ -1,0 +1,19 @@
+[Unit]
+Description=Download Stream
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%t/streams/%i
+Environment=PATH=%h/.local/bin:%h/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=%h/.local/bin/manage-streams.sh download
+PrivateTmp=true
+Restart=always
+NoNewPrivileges=true
+KillMode=mixed
+KillSignal=SIGINT
+
+[Install]
+WantedBy=default.target
+
