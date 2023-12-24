@@ -45,14 +45,20 @@ function vline:add(...)
 
             if dType == "table" then
                 if d[_special_bgc] then
+                    res.LastColor = d[_special_bgc]
                     if not res.FirstColor then
                         res.FirstColor = d[_special_bgc]
                     end
 
-                    res.LastColor = d[_special_bgc]
+                    res[#res + 1] = d
+                elseif d[_special_fgc] then
+                    res.LastForeground = d[_special_fgc]
+                    if not res.FirstForeground then
+                        res.FirstForeground = d[_special_fgc]
+                    end
 
                     res[#res + 1] = d
-                elseif d[_special_fgc] or d[_special_attr] then
+                elseif d[_special_attr] then
                     res[#res + 1] = d
                 else
                     expandArr(d, res)
@@ -96,14 +102,24 @@ function vline:expand()
 
     for i = (self.right and #segs or 1), (self.right and 1 or #segs), (self.right and -1 or 1) do
         if self.right then
-            res[#res + 1] = FGC(segs[i].FirstColor)
-            res[#res + 1] = ""
-            res[#res + 1] = FGC "default"
+            if lastCol ~= segs[i].FirstColor then
+                res[#res + 1] = FGC(segs[i].FirstColor)
+                res[#res + 1] = ""
+                res[#res + 1] = FGC "default"
+            else
+                res[#res + 1] = FGC(segs[i].FirstForeground or "default")
+                res[#res + 1] = ""
+            end
         elseif i > 1 then
-            res[#res + 1] = FGC(lastCol)
-            res[#res + 1] = BGC(segs[i].FirstColor)
-            res[#res + 1] = ""
-            res[#res + 1] = FGC "default"
+            if lastCol ~= segs[i].FirstColor then
+                res[#res + 1] = FGC(lastCol)
+                res[#res + 1] = BGC(segs[i].FirstColor)
+                res[#res + 1] = ""
+                res[#res + 1] = FGC "default"
+            else
+                res[#res + 1] = ""
+                res[#res + 1] = FGC "default"
+            end
         end
 
         for j = 1, #segs[i] do
@@ -125,9 +141,13 @@ function vline:expand()
     end
 
     if not self.right then
-        res[#res + 1] = FGC(segs[#segs].LastColor)
-        res[#res + 1] = BGC "default"
-        res[#res + 1] = ""
+        if segs[#segs].LastColor ~= "default" then
+            res[#res + 1] = FGC(segs[#segs].LastColor)
+            res[#res + 1] = BGC "default"
+            res[#res + 1] = ""
+        else
+            res[#res + 1] = ""
+        end
     end
 
     return res

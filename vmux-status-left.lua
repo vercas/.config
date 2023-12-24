@@ -37,9 +37,9 @@ end
 
 if settings.show_hostname then
     if WID >= 210 then
-        vline:add(BGC "000000", FGC "EEEE22", UNIC "🖥 |", "#{host} ")
+        vline:add(BGC "000000", FGC "EEEE22", UNIC "🖥  |", "#{host} ")
     elseif WID >= 160 then
-        vline:add(BGC "000000", FGC "EEEE22", "#{host_short} ", UNIC "🖥 |")
+        vline:add(BGC "000000", FGC "EEEE22", "#{host_short} ", UNIC "🖥  |")
     end
 end
 
@@ -85,15 +85,15 @@ end
 if settings.show_prefix then
     if PRF == 1 then
         if WID >= 130 then
-            vline:add(BGC "000011", FGC "EEEE00", UNIC " ∧ | ^ ")
+            vline:add(BGC "000000", FGC "EEEE00", UNIC " ∧ | ^ ")
         else
-            vline:add(BGC "000011", FGC "EEEE00", UNIC "∧|^")
+            vline:add(BGC "000000", FGC "EEEE00", UNIC "∧|^")
         end
     else
         if WID >= 130 then
-            vline:add(BGC "000011", FGC "EEEE00", "   ")
+            vline:add(BGC "000000", FGC "EEEE00", "   ")
         else
-            vline:add(BGC "000011", FGC "EEEE00", " ")
+            vline:add(BGC "000000", FGC "EEEE00", " ")
         end
     end
 end
