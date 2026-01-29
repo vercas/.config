@@ -33,7 +33,6 @@ end
 
 __vconfig_add_path ~/.dotnet/tools --append
 __vconfig_add_path /usr/lib/icecc/bin
-__vconfig_add_path ~/.cargo/bin
 __vconfig_add_path ~/.luarocks/bin
 __vconfig_add_path ~/bin
 __vconfig_add_path ~/.local/bin
@@ -56,5 +55,9 @@ end
 
 if which dotnet > /dev/null 2> /dev/null
     set -gx DOTNET_CLI_TELEMETRY_OPTOUT true
+end
+
+if test -e "$HOME/.cargo/env.fish"
+    source "$HOME/.cargo/env.fish"
 end
 
