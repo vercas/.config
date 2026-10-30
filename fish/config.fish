@@ -41,8 +41,6 @@ if test -S "$HOME/.ssh/ssh_auth_sock"
     set -gx SSH_AUTH_SOCK "$HOME/.ssh/ssh_auth_sock"
 end
 
-#source "$HOME/.config/fish/iterm2_shell_integration.fish"
-
 if set -q KITTY_INSTALLATION_DIR; and not set -q KITTY_SHELL_INTEGRATION
     set --global KITTY_SHELL_INTEGRATION enabled
     source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
@@ -60,4 +58,17 @@ end
 if test -e "$HOME/.cargo/env.fish"
     source "$HOME/.cargo/env.fish"
 end
+
+if test -e "$HOME/.config/fish/iterm2_shell_integration.fish" > /dev/null 2> /dev/null
+    source "$HOME/.config/fish/iterm2_shell_integration.fish"
+end
+
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /Users/vercas/.lmstudio/bin
+# End of LM Studio CLI section
+
+
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /Volumes/Crucial X8/lmstudio/bin
+# End of LM Studio CLI section
 

@@ -1,0 +1,440 @@
+#!/usr/bin/env bash
+
+#   vmux -- enter one of my tmux sessions, or make a new one.
+#
+#   Every session created here carries a '@vmux' option. That is what tells mine apart
+#   from the ones automation opens on the same server: only marked sessions are offered
+#   for choosing or listed by default, and '--all' says otherwise.
+
+source $HOME/.config/shell-utilities.sh
+
+MARKOPT="@vmux"
+
+#   Field separator for the listings below. Deliberately not a tab: 'read' counts tabs as
+#   whitespace, so consecutive ones collapse and an empty field -- the usual case for the
+#   marker of someone else's session -- shifts every field after it one place to the left.
+SEP=$'\x1f'
+
+#   How long to wait after creating a session before trusting that it is alive; see
+#   createSession for why this has to be waited out at all.
+CHECK_DELAY=0.4
+
+
+function usage {
+    echo "Usage:"
+    echo ""
+    echo "  vmux              Go into my session: straight in when there is exactly one,"
+    echo "                    asked which one when there are several, made a new one when"
+    echo "                    there is none."
+    echo "  vmux NAME         Go into the session with that exact name, creating it if"
+    echo "                    nothing answers to that name yet."
+    echo "  vmux -n [NAME]    Make a new session instead of going into one that exists."
+    echo "  vmux -l [-a]      List my sessions. With '-a', list every session the server"
+    echo "                    holds, including ones I did not make."
+    exit 0
+}
+
+function die {
+    printf 'vmux: %s\n' "$*" 1>&2
+    exit 1
+}
+
+
+#### Why a session can vanish without saying anything ####
+#
+#   tmux runs default-command itself and reports no failure of its own when it cannot
+#   exec it: the pane is gone, and with it any session that had no other one left, while
+#   'new-session' has already answered with success. In practice this means a box where
+#   '~/.local/bin/fish' was never linked. These functions turn that into something to
+#   read instead of a terminal that blinks and hands you back.
+
+#   The last setting of a global option in ~/.tmux.conf, quotes stripped. Both 'set'
+#   and 'set-option' spellings are taken, as are any scope flags before the name. This is
+#   for diagnosis only: an unusual config goes unreported rather than misread, so it must
+#   never decide anything on its own.
+function confOption {
+    local opt="$1" line value=""
+    local re="^[[:space:]]*set(-[a-zA-Z]+)?([[:space:]]+-[a-zA-Z]+)*[[:space:]]+${opt}[[:space:]]+(.*)$"
+
+    [[ -r "$HOME/.tmux.conf" ]] || return 1
+
+    while IFS= read -r line; do
+        [[ $line =~ ^[[:space:]]*# ]] && continue
+        [[ $line =~ $re ]] || continue
+        value="${BASH_REMATCH[3]}"
+    done < "$HOME/.tmux.conf"
+
+    [[ -n $value ]] || return 1
+
+    value=${value#\"}
+    echo "${value%\"}"
+}
+
+#   Says what just went wrong and what tmux meant to run in each pane. Called only where
+#   a session has already been observed to be gone, so it never claims a failure that is
+#   not there.
+function explainDeadPane {
+    local headline="$1" opt value prog expanded state found=0 previous=""
+
+    printf 'vmux: %s\n' "$headline" 1>&2
+
+    for opt in default-command default-shell; do
+        value=$(confOption "$opt") || continue
+        [[ $value != "$previous" ]] || continue
+        found=1
+        previous=$value
+
+        #   tmux expands '$HOME' and '~' itself while reading its config, so the same is
+        #   done here to ask about the file tmux will really reach for.
+        expanded=$value
+        case $expanded in
+            '~'*)      expanded="$HOME${expanded#\~}" ;;
+            '$HOME'/*) expanded="${HOME}${expanded#'$HOME'}" ;;
+        esac
+
+        prog=${expanded%%[[:space:]]*}
+
+        if [[ -x $prog ]]; then
+            state="it is there and executable, so it is failing by itself"
+        elif [[ -e $prog ]]; then
+            state="it exists but cannot be executed"
+        else
+            state="there is no such file; create it before tmux can use it"
+        fi
+
+        printf 'vmux:     %s = %s (%s)\n' "$opt" "$value" "$state" 1>&2
+    done
+
+    if [[ $found == 0 ]]; then
+        echo "vmux:     neither option is set in '~/.tmux.conf', so panes run the login shell" 1>&2
+        echo "          from the password database, which should not be missing." 1>&2
+    fi
+
+    return 1
+}
+
+
+#### The sessions on this server ####
+#
+#   Names come out of 'list-sessions' rather than a target expression, so nothing here can
+#   match a session by prefix. Fields are split on a separator that is no kind of whitespace:
+#   'read' collapses runs of whitespace separators, which would quietly shift every field after
+#   an empty one -- the marker of someone else's session is empty, and spaces inside names have
+#   to survive being read back just as much.
+
+declare -a NAMES MARKS CLIENTS WINDOWS
+N_COUNT=0
+
+function readSessions {
+    local sep="$SEP" name mark clients windows fmt
+
+    fmt="#{session_name}${sep}#{@vmux}${sep}#{session_attached}${sep}#{session_windows}"
+
+    NAMES=(); MARKS=(); CLIENTS=(); WINDOWS=()
+    N_COUNT=0
+
+    while IFS="$sep" read -r name mark clients windows; do
+        [[ -n $name ]] || continue
+
+        NAMES[$N_COUNT]="$name"
+        MARKS[$N_COUNT]="$mark"
+        CLIENTS[$N_COUNT]="$clients"
+        WINDOWS[$N_COUNT]="$windows"
+
+        N_COUNT=$((N_COUNT + 1))
+    done <<< "$($TMX list-sessions -F "$fmt" 2> /dev/null)"
+}
+
+#   Echoes the position of the session with this exact name, or fails when no session has it.
+function indexOfName {
+    local want="$1" i=0
+
+    while [[ $i -lt $N_COUNT ]]; do
+        if [[ ${NAMES[$i]} == "$want" ]]; then
+            echo "$i"
+            return 0
+        fi
+
+        i=$((i + 1))
+    done
+
+    return 1
+}
+
+
+#### Making a session and going into one ####
+
+#   Makes a detached session, named when a name is given and numbered by tmux otherwise,
+#   then marks it as mine. Echoes the name it ended up with; failures are reported in place.
+function createSession {
+    local want="$1" out rc id
+
+    if [[ -n $want ]]; then
+        out=$($TMX new-session -d -P -s "$want" 2>&1); rc=$?
+    else
+        out=$($TMX new-session -d -P 2>&1); rc=$?
+    fi
+
+    if [[ $rc != 0 ]]; then
+        printf 'vmux: tmux refused to make a session: %s\n' "$out" 1>&2
+        return 1
+    fi
+
+    #   The answer to '-P' is the new name with a colon stuck on the end.
+    id=${out%:}
+
+    if ! $TMX set-option -t "$id" "$MARKOPT" "$(date +%s)" 2> /dev/null; then
+        explainDeadPane "'$id' was gone again before it could be marked."
+        return 1
+    fi
+
+    #   Success here still means little: a pane command tmux cannot exec takes the session
+    #   with it, and that can happen just after all of this looks fine. Waiting for it is
+    #   what makes such a failure loud instead of silent; only making a session pays it.
+    sleep "$CHECK_DELAY"
+
+    if ! $TMX has-session -t "$id" 2> /dev/null; then
+        explainDeadPane "'$id' died as soon as it started."
+        return 1
+    fi
+
+    echo "$id"
+}
+
+#   Makes a new session, however it is asked to be named, and goes into it. Saying which one
+#   it made belongs here: without it a numbered session leaves no trace of what to type next.
+function makeNew {
+    local want="$1" id
+
+    id=$(createSession "$want") || exit 1
+
+    printf "vmux: made a new session, '%s'.\n" "$id"
+    enterSession "$id"
+}
+
+#   Goes to a session. Started from outside tmux that means attaching; started from inside
+#   it has to be 'switch-client', since nesting a client in its own server is refused --
+#   and used here to give up without one word about it, which is worth not repeating.
+function enterSession {
+    local id="$1" current rc
+
+    if [[ -n $TMUX ]]; then
+        current=$($TMX display-message -p '#{session_name}' 2> /dev/null)
+
+        if [[ $current == "$id" ]]; then
+            echo "vmux: you are already in '$id'."
+            return 0
+        fi
+
+        printf "vmux: switching this terminal over to '%s'.\n" "$id"
+        $TMX switch-client -t "$id"
+    else
+        $TMX attach-session -t "$id"
+    fi
+
+    rc=$?
+
+    if [[ $rc == 0 ]]; then
+        return 0
+    fi
+
+    #   A session that was there seconds ago is usually simply gone by now.
+    if ! $TMX has-session -t "$id" 2> /dev/null; then
+        explainDeadPane "'$id' can no longer be entered because it is gone."
+    fi
+
+    printf "vmux: could not enter '%s'.\n" "$id" 1>&2
+    return 1
+}
+
+
+#### Listing and asking ####
+
+function printListing {
+    local i=0 mine note hidden=0
+
+    while [[ $i -lt $N_COUNT ]]; do
+        mine=""
+        [[ -z ${MARKS[$i]} ]] || mine="*"
+
+        if [[ -n $mine || -n $all ]]; then
+            note="not attached"
+            [[ ${CLIENTS[$i]} == 0 ]] || note="${CLIENTS[$i]} client(s) attached"
+
+            printf '%s %-16s %s window(s), %s\n' "${mine:- }" "${NAMES[$i]}" "${WINDOWS[$i]}" "$note"
+        else
+            hidden=$((hidden + 1))
+        fi
+
+        i=$((i + 1))
+    done
+
+    if [[ $N_COUNT == 0 ]]; then
+        echo "vmux: no session on this server yet."
+    elif [[ $hidden != 0 ]]; then
+        printf 'vmux: %d other session(s) belong to something else; try vmux --list --all.\n' "$hidden"
+    fi
+
+    return 0
+}
+
+#   Asks a question of whoever is there. Standard input answers when it already is a
+#   terminal; otherwise the controlling terminal does, so the question still reaches you
+#   over ssh or when standard input has been redirected somewhere else. With no terminal
+#   anywhere this gives up loudly instead of waiting forever.
+function ask {
+    local prompt="$1"
+
+    if [[ ! -t 0 ]]; then
+        exec < /dev/tty 2> /dev/null || die "there is no terminal here to answer on; say which session you want (see: vmux --help)."
+        [[ -t 0 ]] || die "'/dev/tty' is not a terminal; say which session you want (see: vmux --help)."
+    fi
+
+    while :; do
+        printf '%s' "$prompt"
+
+        if ! read -r ANSWER; then
+            die "nothing was answered, so nothing was done."
+        fi
+
+        [[ -n $ANSWER ]] && return 0
+
+        #   An empty line is no answer: go round and ask again rather than guess at it.
+    done
+}
+
+declare -a PICK_NAMES
+PICK_COUNT=0
+NEW_WANTED=0
+TARGET=""
+ANSWER=""
+
+#   Offers my sessions by number, with a new one on offer at the end, and sets TARGET (or
+#   NEW_WANTED when that last choice is taken).
+function pickSession {
+    local i=0 note prompt
+
+    echo "vmux: more than one of my sessions is running:"
+
+    while [[ $i -lt $N_COUNT ]]; do
+        if [[ -n ${MARKS[$i]} ]]; then
+            note="not attached"
+            [[ ${CLIENTS[$i]} == 0 ]] || note="${CLIENTS[$i]} client(s) attached"
+
+            printf '      %d) %-16s %s window(s), %s\n' $((PICK_COUNT + 1)) "${NAMES[$i]}" "${WINDOWS[$i]}" "$note"
+
+            PICK_NAMES[$PICK_COUNT]="${NAMES[$i]}"
+            PICK_COUNT=$((PICK_COUNT + 1))
+        fi
+
+        i=$((i + 1))
+    done
+
+    printf '      %s) a new session\n' "n"
+
+    while :; do
+        ask "vmux: which one? [1-$PICK_COUNT or n]: "
+
+        if [[ $ANSWER == n || $ANSWER == N ]]; then
+            NEW_WANTED=1
+            return 0
+        fi
+
+        if [[ $ANSWER =~ ^[0-9]+$ ]] && (( ANSWER >= 1 && ANSWER <= PICK_COUNT )); then
+            TARGET="${PICK_NAMES[$((ANSWER - 1))]}"
+            return 0
+        fi
+
+        echo "vmux: that is not one of them."
+    done
+}
+
+
+#### What runs ####
+
+new_only=""
+name=""
+list=""
+all=""
+
+while [[ $# != 0 ]]; do
+    case "$1" in
+        -h | --help) usage ;;
+        -l | --list) list=1 ;;
+        -a | --all) all=1; list=1 ;;
+        -n | --new) new_only=1 ;;
+
+        -*) die "unknown option '$1'; short options are spelled out one at a time, as in 'vmux -l -a' (see: vmux --help)." ;;
+        *)
+            [[ -z $name ]] || die "'$1' and '$name' cannot both be the session name."
+            name="$1"
+            ;;
+    esac
+
+    shift
+done
+
+readSessions
+
+if [[ -n $list ]]; then
+    printListing
+    exit $?
+fi
+
+#   '-n' means a new session whatever is already running, named when one came with it. A name
+#   on its own only creates anything when nothing answers to that name yet.
+if [[ -n $new_only ]]; then
+    makeNew "$name"
+    exit $?
+fi
+
+if [[ -n $name ]]; then
+    if idx=$(indexOfName "$name"); then
+        TARGET="${NAMES[$idx]}"
+
+        #   A name is looked up among every session, so this can land on one made elsewhere. It
+        #   stays unmarked and out of the list, worth saying once rather than leaving 'vmux -l'
+        #   looking like it lost a session.
+        if [[ -z ${MARKS[$idx]} ]]; then
+            printf "vmux: '%s' was not made by vmux, so it does not turn up in 'vmux --list'.\n" "$TARGET"
+        fi
+
+        enterSession "$TARGET"
+        exit $?
+    fi
+
+    makeNew "$name"
+    exit $?
+fi
+
+#   Nothing asked for by name: what has vmux itself made on this server?
+mineCount=0
+soleMine=""
+
+i=0
+
+while [[ $i -lt $N_COUNT ]]; do
+    if [[ -n ${MARKS[$i]} ]]; then
+        soleMine="${NAMES[$i]}"
+        mineCount=$((mineCount + 1))
+    fi
+
+    i=$((i + 1))
+done
+
+#   None at all means the first run on this box; exactly one needs no asking about it.
+if [[ $mineCount == 0 ]]; then
+    makeNew ""
+elif [[ $mineCount == 1 ]]; then
+    enterSession "$soleMine"
+else
+    pickSession
+
+    if [[ $NEW_WANTED != 0 ]]; then
+        makeNew ""
+    else
+        enterSession "$TARGET"
+    fi
+fi
+
+exit $?
